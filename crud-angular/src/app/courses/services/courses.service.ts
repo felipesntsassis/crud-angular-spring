@@ -14,15 +14,26 @@ export class CoursesService {
   constructor(private httpClient: HttpClient) { }
 
   list() {
-    return this.httpClient.get<Course[]>(this.API)
-      .pipe(
-        first(),
-        tap(courses => console.log(courses))
-      );
+    return this.httpClient.get<Course[]>(this.API).pipe(
+      first(),
+      tap(courses => console.log(courses))
+    );
+  }
+
+  loadById(id: string) {
+    return this.httpClient.get<Course>(`${this.API}/${id}`).pipe(first());
   }
 
   save(record: Partial<Course>) {
+    return record._id ? this.update(record) : this.create(record);
+  }
+
+  private create(record: Partial<Course>) {
     return this.httpClient.post<Course>(this.API, record).pipe(first());
+  }
+
+  private update(record: Partial<Course>) {
+    return this.httpClient.put<Course>(`${this.API}/${record._id}`, record).pipe(first());
   }
 
 }

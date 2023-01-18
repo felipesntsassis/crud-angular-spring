@@ -1,9 +1,12 @@
+import { Course } from './../../model/course';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NonNullableFormBuilder } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute } from '@angular/router';
 
 import { CoursesService } from '../../services/courses.service';
+import { __classPrivateFieldSet } from 'tslib';
 
 @Component({
   selector: 'app-course-form',
@@ -13,6 +16,7 @@ import { CoursesService } from '../../services/courses.service';
 export class CourseFormComponent implements OnInit {
 
   form = this.fb.group({
+    _id: [''],
     name: [''],
     category: ['']
   });
@@ -21,12 +25,19 @@ export class CourseFormComponent implements OnInit {
     private fb: NonNullableFormBuilder,
     private location: Location,
     private snackBar: MatSnackBar,
+    private route: ActivatedRoute,
     private service: CoursesService
   ) {
-    // this.form
   }
 
   ngOnInit() {
+    const course: Course = this.route.snapshot.data['course'];
+    console.log(course);
+    this.form.setValue({
+      _id: course._id,
+      name: course.name,
+      category: course.category
+    });
   }
 
   onCancel() {
@@ -52,4 +63,5 @@ export class CourseFormComponent implements OnInit {
     });
     this.onCancel();
   }
+
 }
