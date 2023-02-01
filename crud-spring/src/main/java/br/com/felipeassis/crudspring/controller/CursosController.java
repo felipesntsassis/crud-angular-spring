@@ -1,10 +1,10 @@
 package br.com.felipeassis.crudspring.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +23,16 @@ import lombok.AllArgsConstructor;
 public class CursosController {
     
     private final CourseRepository repository;
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        return repository.findById(id)
+            .map(recordFound -> {
+                repository.delete(recordFound);
+                return ResponseEntity.noContent().<Void>build();
+            })
+            .orElse(ResponseEntity.notFound().build());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Course> findById(@PathVariable Long id) {

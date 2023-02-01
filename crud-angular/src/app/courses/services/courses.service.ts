@@ -28,6 +28,10 @@ export class CoursesService {
     return record._id ? this.update(record) : this.create(record);
   }
 
+  remove(id: string) {
+    return this.httpClient.delete(`${this.API}/${id}`).pipe(first());
+  }
+
   private create(record: Partial<Course>) {
     return this.httpClient.post<Course>(this.API, record).pipe(first());
   }
