@@ -1,4 +1,3 @@
-import { Course } from './../../model/course';
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { NonNullableFormBuilder, Validators } from '@angular/forms';
@@ -6,7 +5,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 
 import { CoursesService } from '../../services/courses.service';
-import { __classPrivateFieldSet } from 'tslib';
+import { Course } from './../../model/course';
 
 @Component({
   selector: 'app-course-form',
@@ -70,7 +69,7 @@ export class CourseFormComponent implements OnInit {
 
   onSubmit() {
     this.service.save(this.form.value).subscribe({
-      next: result => this.onSuccess(),
+      next: () => this.onSuccess(),
       error: () => this.onError()
     });
   }
