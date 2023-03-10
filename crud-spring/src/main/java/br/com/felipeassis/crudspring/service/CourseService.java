@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import br.com.felipeassis.crudspring.exception.RecordNotFoundException;
 import br.com.felipeassis.crudspring.model.Course;
 import br.com.felipeassis.crudspring.repository.CourseRepository;
 import jakarta.validation.Valid;
@@ -26,30 +27,26 @@ public class CourseService {
         return repository.save(course);
     }
 
-    public boolean delete(@NotNull @Positive Long id) {
-        return repository.findById(id)
-            .map(recordFound -> {
-                repository.delete(recordFound);
-                return true;
-            })
-            .orElse(false);
+    public void delete(@NotNull @Positive Long id) {
+        repository.delete(repository.findById(id).orElseThrow(() -> new RecordNotFoundException(id)));
     }
 
-    public Optional<Course> findById(@NotNull @Positive Long id) {
-        return repository.findById(id);
+    public Course findById(@NotNull @Positive Long id) {
+        return repository.findById(id).orElseThrow(() -> new RecordNotFoundException(id));
     }
-    
+
     public List<Course> list() {
         return repository.findAll();
     }
 
-    public Optional<Course> update(@NotNull @Positive Long id, @Valid Course course) {
+    public Course update(@NotNull @Positive Long id, @Valid Course course) {
         return repository.findById(id)
             .map(recordFound -> {
                 recordFound.setName(course.getName());
                 recordFound.setCategory(course.getCategory());
 
                 return repository.save(recordFound);
-            });
+            })
+            .orElseThrow(() -> new RecordNotFoundException(id));
     }
 }
