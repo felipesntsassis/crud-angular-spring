@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 
 import br.com.felipeassis.crudspring.dto.CourseDTO;
 import br.com.felipeassis.crudspring.dto.mapper.CourseMapper;
+import br.com.felipeassis.crudspring.enums.Category;
 import br.com.felipeassis.crudspring.exception.RecordNotFoundException;
 import br.com.felipeassis.crudspring.repository.CourseRepository;
 import jakarta.validation.Valid;
@@ -51,7 +52,7 @@ public class CourseService {
         return repository.findById(id)
             .map(recordFound -> {
                 recordFound.setName(course.name());
-                recordFound.setCategory(course.category());
+                recordFound.setCategory(Category.FRONT_END);
 
                 return mapper.toDTO(repository.save(recordFound));
             })
