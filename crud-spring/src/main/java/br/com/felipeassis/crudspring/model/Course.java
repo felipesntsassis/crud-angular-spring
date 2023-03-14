@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.com.felipeassis.crudspring.enums.Category;
+import br.com.felipeassis.crudspring.enums.Status;
 import br.com.felipeassis.crudspring.enums.converters.CategoryConverter;
 import br.com.felipeassis.crudspring.enums.converters.StatusConverter;
 import jakarta.persistence.Column;
@@ -44,6 +45,6 @@ public class Course {
     @NotNull
     @Column(length = 10, nullable = false)
     @Convert(converter = StatusConverter.class)
-    private String status = "Ativo";
+    private Status status = Status.ACTIVE;
 
 }
