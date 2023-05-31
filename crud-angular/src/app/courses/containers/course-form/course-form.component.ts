@@ -1,11 +1,12 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { NonNullableFormBuilder, Validators } from '@angular/forms';
+import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 
 import { CoursesService } from '../../services/courses.service';
 import { Course } from './../../model/course';
+import { Lesson } from '../../model/lesson';
 
 @Component({
   selector: 'app-course-form',
@@ -14,15 +15,7 @@ import { Course } from './../../model/course';
 })
 export class CourseFormComponent implements OnInit {
 
-  form = this.fb.group({
-    _id: [''],
-    name: ['', [
-      Validators.required,
-      Validators.minLength(5),
-      Validators.maxLength(100)
-    ]],
-    category: ['', [Validators.required]]
-  });
+  form!: FormGroup;
 
   constructor(
     private fb: NonNullableFormBuilder,
@@ -35,11 +28,17 @@ export class CourseFormComponent implements OnInit {
 
   ngOnInit() {
     const course: Course = this.route.snapshot.data['course'];
-    this.form.setValue({
-      _id: course._id,
-      name: course.name,
-      category: course.category
+    this.form = this.fb.group({
+      _id: [course._id],
+      name: [course.name, [
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(100)
+      ]],
+      category: [course.category, [Validators.required]],
+      lessons: this.fb.array(this.retrieveLessons(course))
     });
+
     console.log(course);
   }
 
@@ -74,6 +73,15 @@ export class CourseFormComponent implements OnInit {
     });
   }
 
+
+  private createLesson(lesson: Lesson = { id: '', name: '', youtubeUrl: '' }) {
+    return this.fb.group([{
+      id: [lesson.id],
+      name: [lesson.name],
+      youtubeUrl: [lesson.youtubeUrl]
+    }]);
+  }
+
   private onError() {
     this.snackBar.open('Erro ao salvar curso', '', {
       duration: 5000
@@ -85,6 +93,18 @@ export class CourseFormComponent implements OnInit {
       duration: 5000
     });
     this.onCancel();
+  }
+
+  private retrieveLessons(course: Course) {
+    const lessons = [];
+
+    if (course?.lessons) {
+      course.lessons.forEach(lesson => lessons.push(this.createLesson(lesson)));
+    } else {
+      lessons.push(this.createLesson());
+    }
+
+    return lessons;
   }
 
 }
