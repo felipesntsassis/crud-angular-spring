@@ -1,6 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, NonNullableFormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormGroup, NonNullableFormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 
@@ -62,6 +62,10 @@ export class CourseFormComponent implements OnInit {
     return 'Campo inválido';
   }
 
+  getLessonsFormArray() {
+    return (<UntypedFormArray> this.form.get('lessons')).controls;
+  }
+
   onCancel() {
     this.location.back();
   }
@@ -75,11 +79,11 @@ export class CourseFormComponent implements OnInit {
 
 
   private createLesson(lesson: Lesson = { id: '', name: '', youtubeUrl: '' }) {
-    return this.fb.group([{
+    return this.fb.group({
       id: [lesson.id],
       name: [lesson.name],
       youtubeUrl: [lesson.youtubeUrl]
-    }]);
+    });
   }
 
   private onError() {
