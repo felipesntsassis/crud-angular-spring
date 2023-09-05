@@ -38,8 +38,6 @@ export class CourseFormComponent implements OnInit {
       category: [course.category, [Validators.required]],
       lessons: this.fb.array(this.retrieveLessons(course), Validators.required)
     });
-
-    console.log(course);
   }
 
   addNewLesson() {
