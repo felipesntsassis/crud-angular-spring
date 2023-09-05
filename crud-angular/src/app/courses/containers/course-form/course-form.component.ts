@@ -36,7 +36,7 @@ export class CourseFormComponent implements OnInit {
         Validators.maxLength(100)
       ]],
       category: [course.category, [Validators.required]],
-      lessons: this.fb.array(this.retrieveLessons(course))
+      lessons: this.fb.array(this.retrieveLessons(course), Validators.required)
     });
 
     console.log(course);
@@ -71,15 +71,25 @@ export class CourseFormComponent implements OnInit {
     return (<UntypedFormArray> this.form.get('lessons')).controls;
   }
 
+  isFormArrayRequired() {
+    const lessons = <UntypedFormArray> this.form.get('lessons');
+
+    return !lessons.valid && lessons.hasError('required') && lessons.touched;
+  }
+
   onCancel() {
     this.location.back();
   }
 
   onSubmit() {
-    this.service.save(this.form.value).subscribe({
-      next: () => this.onSuccess(),
-      error: () => this.onError()
-    });
+    if (this.form.valid) {
+      this.service.save(this.form.value).subscribe({
+        next: () => this.onSuccess(),
+        error: () => this.onError()
+      });
+    } else {
+      alert('Form inválido!');
+    }
   }
 
   removeLesson(index: number) {
@@ -89,9 +99,21 @@ export class CourseFormComponent implements OnInit {
 
   private createLesson(lesson: Lesson = { id: '', name: '', youtubeUrl: '' }) {
     return this.fb.group({
-      id: [lesson.id],
-      name: [lesson.name],
-      youtubeUrl: [lesson.youtubeUrl]
+      id: [lesson.id, [
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(100)
+      ]],
+      name: [lesson.name, [
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(100)
+      ]],
+      youtubeUrl: [lesson.youtubeUrl, [
+        Validators.required,
+        Validators.minLength(10),
+        Validators.maxLength(11)
+      ]]
     });
   }
 
