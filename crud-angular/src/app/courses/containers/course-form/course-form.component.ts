@@ -42,6 +42,11 @@ export class CourseFormComponent implements OnInit {
     console.log(course);
   }
 
+  addNewLesson() {
+    const lessons = <UntypedFormArray> this.form.get('lessons');
+    lessons.push(this.createLesson());
+  }
+
   getErrorMessage(fieldName: string) {
     const field = this.form.get(fieldName);
 
@@ -77,6 +82,10 @@ export class CourseFormComponent implements OnInit {
     });
   }
 
+  removeLesson(index: number) {
+    const lessons = <UntypedFormArray> this.form.get('lessons');
+    lessons.removeAt(index);
+  }
 
   private createLesson(lesson: Lesson = { id: '', name: '', youtubeUrl: '' }) {
     return this.fb.group({
