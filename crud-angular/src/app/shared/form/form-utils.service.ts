@@ -49,6 +49,7 @@ export class FormUtilsService {
       if (control instanceof UntypedFormControl) {
         control.markAsTouched({ onlySelf: true });
       } else if (control instanceof UntypedFormGroup || control instanceof UntypedFormArray) {
+        control.markAsTouched({ onlySelf: true });
         this.validateAllFormFields(control);
       }
     });

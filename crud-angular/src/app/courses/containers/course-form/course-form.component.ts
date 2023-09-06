@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { CoursesService } from '../../services/courses.service';
 import { Course } from './../../model/course';
 import { Lesson } from '../../model/lesson';
+import { FormUtilsService } from 'src/app/shared/form/form-utils.service';
 
 @Component({
   selector: 'app-course-form',
@@ -22,7 +23,8 @@ export class CourseFormComponent implements OnInit {
     private location: Location,
     private snackBar: MatSnackBar,
     private route: ActivatedRoute,
-    private service: CoursesService
+    private service: CoursesService,
+    public formUtils: FormUtilsService
   ) {
   }
 
@@ -45,34 +47,8 @@ export class CourseFormComponent implements OnInit {
     lessons.push(this.createLesson());
   }
 
-  getErrorMessage(fieldName: string) {
-    const field = this.form.get(fieldName);
-
-    if (field?.hasError('required')) {
-      return 'Campo obrigatório';
-    }
-    if(field?.hasError('minlength')) {
-      const requiredLength = field.errors ? field.errors['minlength']['requiredLength'] : 5;
-
-      return `Tamanho mínimo precisa ser de ${requiredLength} caracteres.`;
-    }
-    if(field?.hasError('maxlength')) {
-      const requiredLength = field.errors ? field.errors['maxlength']['requiredLength'] : 100;
-
-      return `Tamanho máximo excedido de ${requiredLength} caracteres.`;
-    }
-
-    return 'Campo inválido';
-  }
-
   getLessonsFormArray() {
     return (<UntypedFormArray> this.form.get('lessons')).controls;
-  }
-
-  isFormArrayRequired() {
-    const lessons = <UntypedFormArray> this.form.get('lessons');
-
-    return !lessons.valid && lessons.hasError('required') && lessons.touched;
   }
 
   onCancel() {
@@ -86,7 +62,7 @@ export class CourseFormComponent implements OnInit {
         error: () => this.onError()
       });
     } else {
-      alert('Form inválido!');
+      this.formUtils.validateAllFormFields(this.form);
     }
   }
 
